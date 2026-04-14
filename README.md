@@ -1,6 +1,9 @@
 # LSD_UI
 
-基于最小二乘反卷积（Least Squares Deconvolution，LSD）算法的光谱分析工具，支持 JSON 配置驱动的命令行运行方式。
+基于最小二乘反卷积（Least Squares Deconvolution，LSD）算法的光谱分析工具，提供两种使用方式：
+
+- **Web UI**：浏览器图形界面（推荐），通过 `app.py` 启动 FastAPI 服务
+- **命令行**：JSON 配置驱动的脚本运行方式，通过 `lsd_runner.py` 启动
 
 ---
 
@@ -8,9 +11,12 @@
 
 ```
 LSD_UI/
-├── LSDConfig.json          # 主配置文件（运行前必须编辑）
+├── app.py                  # Web UI 服务入口（FastAPI + 静态前端）
+├── launch_ui.py            # 启动器（规范化参数后转发给 app.py）
+├── launch_ui.sh            # macOS / Linux Shell 启动脚本
 ├── lsd_runner.py           # 命令行入口（顶层快捷脚本）
 ├── config_loader.py        # 配置加载器
+├── LSDConfig.json          # 主配置文件（运行前必须编辑）
 ├── core/                   # 核心层：配置定义、IO、求解器、绘图
 │   ├── lsd_config.py       # paramsLSD 参数对象与权重模式定义
 │   ├── lsd_io.py           # 观测数据、掩膜、剖面的读写
@@ -20,10 +26,20 @@ LSD_UI/
 ├── pipeline/               # 任务编排层
 │   ├── lsd_pipeline.py     # 单次 LSD 运行流程
 │   └── lsd_runner.py       # 命令行参数解析与任务启动
+├── api/                    # Web API 扩展路由（预留）
+├── frontend/               # Web UI 前端（HTML / CSS / JS）
+│   ├── index.html          # 单页应用主入口（含四标签页）
+│   ├── css/app.css         # 全局样式
+│   └── js/
+│       ├── common.js       # 共享状态与工具（window.LSDUI）
+│       ├── params.js       # 参数配置面板
+│       ├── data.js         # 光谱与掩膜路径管理
+│       ├── task.js         # 任务启动 / 日志 / 轮询
+│       └── results.js      # 结果 profile 绘图
 ├── data/                   # 观测输入数据（.s 格式）
 ├── masks/                  # 线掩膜文件（.dat 格式）
 ├── results/                # 输出结果目录
-└── tests/                  # 单元测试
+└── docs/                   # 技术文档
 ```
 
 ---
@@ -37,7 +53,7 @@ LSD_UI/
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt   # 如存在
+pip install -r requirements.txt
 ```
 
 ### 2. 准备输入文件
@@ -45,13 +61,36 @@ pip install -r requirements.txt   # 如存在
 - **观测光谱**：放入 `data/` 目录，格式为 Stokes IVNU 列式 `.s` 文件。
 - **线掩膜**：放入 `masks/` 目录，格式为波长/谱线深度/Landé 因子列式 `.dat` 文件。
 
-### 3. 编辑配置文件
-
-打开 `LSDConfig.json`，按实际路径和参数需求修改各字段（详见下方参数说明）。
-
-### 4. 运行
+### 3. 启动 Web UI（推荐）
 
 ```bash
+# 方式一：直接运行服务（自动选择端口，自动打开浏览器）
+python app.py
+
+# 方式二：通过启动器（支持位置参数端口）
+python launch_ui.py
+python launch_ui.py 8080
+
+# 方式三：Shell 脚本（macOS / Linux）
+./launch_ui.sh
+./launch_ui.sh 8080
+```
+
+浏览器打开后，可在界面中完成：
+
+- **Params 标签页**：编辑所有 LSD 参数（profile / normalization / processing / output），支持保存到 `LSDConfig.json` 或导出 JSON
+- **Data 标签页**：选择观测光谱和线掩膜路径，浏览服务器上的可用文件
+- **Task 标签页**：验证配置、启动 LSD 任务、查看实时日志；支持 Mock（前端模拟）和 API（调用后端）两种模式
+- **Results 标签页**：读取最近任务结果，渲染 LSD profile 折线图
+
+API 文档（Swagger UI）可访问：`http://127.0.0.1:8080/api/docs`
+
+### 4. 命令行运行
+
+```bash
+# 编辑配置文件
+# 打开 LSDConfig.json，按实际路径和参数需求修改各字段（详见下方参数说明）
+
 # 使用默认 LSDConfig.json
 python lsd_runner.py
 

@@ -3,8 +3,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual environment
+.venv/
+
+# macOS metadata
+.DS_Store
+
 # Results
 results/
 
 # Tests
 tests/
+
+# One-time scaffold script
+refactor.py
