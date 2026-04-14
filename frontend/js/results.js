@@ -56,5 +56,21 @@ function loadResult() {
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("btn-result-load").addEventListener("click", loadResult);
+
+  var btnSpectrum = document.getElementById("btn-view-spectrum");
+  if (btnSpectrum) {
+    btnSpectrum.addEventListener("click", function () {
+      var cfg = window.LSDUI.loadConfig();
+      var obs = (cfg.input && cfg.input.observation) || "";
+      var mask = (cfg.input && cfg.input.mask) || "";
+      if (!obs || !mask) {
+        setStatusBar("result-status", "Set observation and mask paths in the Data tab first.", "warn");
+        return;
+      }
+      var url = "spectrum_view.html?obs=" + encodeURIComponent(obs) + "&mask=" + encodeURIComponent(mask);
+      window.open(url, "_blank");
+    });
+  }
+
   loadResult();
 });

@@ -556,3 +556,26 @@ input:focus, select:focus { border-color: var(--primary); }
   .field-grid { grid-template-columns: 1fr; }
 }
 
+
+/* ── Spectrum Viewer ──────────────────────────────────────── */
+.sv-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.sv-toolbar .field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 260px;
+}
+.sv-plot-frame {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-base);
+  min-height: 740px;
+}
+.card--plot-frame { padding: 12px; }
