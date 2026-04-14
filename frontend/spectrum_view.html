@@ -40,7 +40,7 @@
         <div id="sv-status" class="status-bar"></div>
       </section>
 
-      <section class="card" style="padding:12px">
+      <section class="card card--plot-frame">
         <iframe id="sv-plot-frame" class="sv-plot-frame" frameborder="0" scrolling="no"
                 title="Interactive spectrum and mask plot"></iframe>
       </section>
@@ -59,7 +59,7 @@
             window.setStatusBar("sv-status", "Please provide both an observation file and a mask file.", "warn");
             return;
           }
-          window.setStatusBar("sv-status", "Loading plot\u2026", "");
+          window.setStatusBar("sv-status", "Loading plot\u2026", "warn");
           var url = "/api/plot/spectrum?obs=" + encodeURIComponent(obs) + "&mask=" + encodeURIComponent(mask);
           var frame = document.getElementById("sv-plot-frame");
           frame.onload = function () {

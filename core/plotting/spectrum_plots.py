@@ -10,6 +10,20 @@ The function returns a self-contained HTML string that can be embedded
 directly in a page or served as a standalone response.
 """
 
+# Ionization labels indexed by ion stage (0-based → Roman numeral I through V).
+# Mask element encoding: integer part = atomic number Z,
+# decimal part = (ionization_stage * 0.01), e.g., 26.01 = Fe II.
+_ION_LABELS = ['I', 'II', 'III', 'IV', 'V']
+
+
+def _element_label(enc):
+    """Return a human-readable element + ionization string from mask encoding."""
+    Z = int(round(enc))
+    ion_decimal = round((enc - Z) * 100)
+    # Clamp ion_decimal to the valid index range [0, len(_ION_LABELS)-1]
+    ion_label = _ION_LABELS[min(max(ion_decimal, 0), len(_ION_LABELS) - 1)]
+    return f'Z={Z} {ion_label}'
+
 
 def plot_spectrum_with_mask(obs, line_mask, output_path=''):
     """Build an interactive Plotly figure of the observed spectrum with mask annotations.
@@ -63,14 +77,6 @@ def plot_spectrum_with_mask(obs, line_mask, output_path=''):
     # Normalise depths for display: scale so max depth fills ~0.3 of the plot
     max_depth = float(np.max(mask_depth_vis)) if len(mask_depth_vis) > 0 else 1.0
     max_depth = max(max_depth, 1e-6)
-
-    # Build element labels (encoded as float: integer=atomic_number, decimal=ion*0.01)
-    def _element_label(enc):
-        Z = int(round(enc))
-        ion_decimal = round((enc - Z) * 100)
-        ion_str = ['I', 'II', 'III', 'IV', 'V']
-        ion_label = ion_str[min(ion_decimal, 4)] if ion_decimal >= 0 else '?'
-        return f'Z={Z} {ion_label}'
 
     mask_labels = [_element_label(e) for e in mask_element_vis]
 

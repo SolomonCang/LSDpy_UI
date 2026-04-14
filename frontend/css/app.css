@@ -578,3 +578,4 @@ input:focus, select:focus { border-color: var(--primary); }
   background: var(--bg-base);
   min-height: 740px;
 }
+.card--plot-frame { padding: 12px; }
