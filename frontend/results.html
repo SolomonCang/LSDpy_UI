@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSD UI - Result Plot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">LSD UI Workbench</div>
+        <nav class="main-nav">
+          <a class="nav-link" data-page="params" href="params.html">Parameters</a>
+          <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
+          <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
+          <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1>Result Plot</h1>
+        <p>Plot latest LSD profile preview from task output cache.</p>
+      </section>
+
+      <section class="card">
+        <div class="btn-row" style="margin-bottom:10px">
+          <button class="btn secondary" id="btn-result-load">Load Latest Result</button>
+          <span id="result-status" class="status">No data</span>
+        </div>
+        <div class="plot-box">
+          <svg id="profile-svg" viewBox="0 0 900 280" preserveAspectRatio="none"></svg>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Result Summary</h2>
+        <textarea id="result-json" spellcheck="false"></textarea>
+      </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/results.js"></script>
+  </body>
+</html>

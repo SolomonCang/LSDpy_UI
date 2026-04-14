@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSD UI - Task</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">LSD UI Workbench</div>
+        <nav class="main-nav">
+          <a class="nav-link" data-page="params" href="params.html">Parameters</a>
+          <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
+          <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
+          <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1>LSD Task</h1>
+        <p>Run in mock mode now, switch to API mode when backend endpoints are ready.</p>
+      </section>
+
+      <section class="card">
+        <h2>Run Control</h2>
+        <div class="grid two">
+          <label>Run Mode
+            <select id="run-mode">
+              <option value="mock">Mock</option>
+              <option value="api">API</option>
+            </select>
+          </label>
+          <label>API Base URL <input id="api-base-url" type="text" value="http://127.0.0.1:8000" /></label>
+        </div>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn ghost" id="btn-run-validate">Validate Config</button>
+          <button class="btn secondary" id="btn-run-start">Start Task</button>
+          <button class="btn danger" id="btn-run-stop">Stop</button>
+          <span id="task-status" class="status">Idle</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Task Log</h2>
+        <div id="task-log" class="log"></div>
+      </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/task.js"></script>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSD UI Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/app.css?v=2" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">✦</span>
+        <div>
+          <div class="brand-title">LSD UI Workbench</div>
+          <div class="brand-sub">Least-Squares Deconvolution</div>
+        </div>
+      </div>
+      <nav class="tab-nav" role="tablist" aria-label="Main navigation">
+        <button class="tab-btn active" data-tab="params"  role="tab" aria-selected="true">⚙️ Params</button>
+        <button class="tab-btn"        data-tab="data"    role="tab" aria-selected="false">📂 Data</button>
+        <button class="tab-btn"        data-tab="task"    role="tab" aria-selected="false">▶ Task</button>
+        <button class="tab-btn"        data-tab="results" role="tab" aria-selected="false">📊 Results</button>
+      </nav>
+      <a class="docs-link" href="/api/docs" target="_blank" title="FastAPI docs">API ↗</a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="app-main">
+
+    <!-- ── Tab: Params ──────────────────────────────────────────────── -->
+    <section id="tab-params" class="tab-panel active" role="tabpanel">
+      <div class="panel-header">
+        <h2>LSD Parameters</h2>
+        <div class="panel-actions">
+          <button id="params-reload-btn" class="btn btn-secondary">↻ Reload</button>
+          <button id="params-reset-btn"  class="btn btn-secondary">⟳ Reset</button>
+          <button id="params-export-btn" class="btn btn-secondary">⬇ Export JSON</button>
+          <button id="params-save-btn"   class="btn btn-primary">💾 Save</button>
+        </div>
+      </div>
+      <div id="params-status" class="status-bar" aria-live="polite"></div>
+      <!-- Accordion sections rendered by params.js -->
+      <div id="params-form" class="accordion-list"></div>
+      <!-- JSON preview -->
+      <details class="json-preview-wrap">
+        <summary class="json-preview-summary">JSON Preview</summary>
+        <textarea id="params-json-preview" class="json-preview" spellcheck="false" readonly></textarea>
+      </details>
+    </section>
+
+    <!-- ── Tab: Data ────────────────────────────────────────────────── -->
+    <section id="tab-data" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Spectrum &amp; Mask</h2>
+        <div class="panel-actions">
+          <button id="btn-data-reload"   class="btn btn-secondary">↻ Reload</button>
+          <button id="btn-validate"      class="btn btn-secondary">🔍 Validate</button>
+          <button id="btn-data-save"     class="btn btn-primary">💾 Save</button>
+        </div>
+      </div>
+      <div id="data-status" class="status-bar" aria-live="polite"></div>
+
+      <div class="card">
+        <div class="card-title">Input Paths</div>
+        <div class="field-grid">
+          <div class="field-row field-row--full">
+            <label class="field-label" for="input-observation">input.observation</label>
+            <input type="text" id="input-observation" class="field-input" placeholder="data/filename.s" />
+          </div>
+          <div class="field-row field-row--full">
+            <label class="field-label" for="input-mask">input.mask</label>
+            <input type="text" id="input-mask" class="field-input" placeholder="masks/filename.dat" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Available Data Files</div>
+        <div id="data-files-list" class="file-chip-list"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Available Mask Files</div>
+        <div id="mask-files-list" class="file-chip-list"></div>
+      </div>
+    </section>
+
+    <!-- ── Tab: Task ─────────────────────────────────────────────────── -->
+    <section id="tab-task" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>LSD Task</h2>
+        <div class="panel-actions">
+          <button id="btn-run-validate" class="btn btn-secondary">🔍 Validate Config</button>
+          <button id="btn-run-start"    class="btn btn-primary">▶ Run LSD</button>
+          <button id="btn-run-stop"     class="btn btn-danger">■ Stop</button>
+        </div>
+      </div>
+      <div id="task-status" class="status-bar" aria-live="polite"></div>
+
+      <div class="card">
+        <div class="card-title">Run Settings</div>
+        <div class="field-grid">
+          <div class="field-row">
+            <label class="field-label" for="run-mode">Run mode</label>
+            <select id="run-mode" class="field-select">
+              <option value="mock">Mock (simulate)</option>
+              <option value="api">API (live backend)</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label class="field-label" for="api-base-url">API base URL</label>
+            <input type="text" id="api-base-url" class="field-input" value="http://127.0.0.1:8080" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+          Task Log
+          <button id="btn-log-clear" class="btn btn-ghost btn-sm">Clear</button>
+        </div>
+        <div id="task-log" class="log-panel"></div>
+      </div>
+    </section>
+
+    <!-- ── Tab: Results ───────────────────────────────────────────────── -->
+    <section id="tab-results" class="tab-panel" role="tabpanel">
+      <div class="panel-header">
+        <h2>Result Plot</h2>
+        <div class="panel-actions">
+          <button id="btn-result-load" class="btn btn-primary">↻ Load Latest</button>
+        </div>
+      </div>
+      <div id="result-status" class="status-bar" aria-live="polite"></div>
+
+      <div class="card">
+        <div class="card-title">LSD Profile</div>
+        <div class="plot-box">
+          <svg id="profile-svg" viewBox="0 0 900 280" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Result Summary</div>
+        <textarea id="result-json" class="json-preview" spellcheck="false" readonly></textarea>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <span>LSD UI Workbench</span>
+    <span class="sep">•</span>
+    <a href="/api/docs" target="_blank">API docs</a>
+    <span class="sep">•</span>
+    <span>Least-Squares Deconvolution pipeline</span>
+  </footer>
+
+  <!-- Application JS (order matters: common.js first) -->
+  <script src="js/common.js?v=2"></script>
+  <script src="js/params.js?v=2"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/task.js?v=2"></script>
+  <script src="js/results.js?v=2"></script>
+</body>
+</html>
+

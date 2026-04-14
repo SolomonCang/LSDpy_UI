@@ -1,0 +1,40 @@
+{
+  "input": {
+    "observation": "data/hd219134_19jun16_v_01.s",
+    "mask": "masks/mask-4500g40-0.1-trim3.dat"
+  },
+  "profile": {
+    "vel_start_kms": -200.0,
+    "vel_end_kms": 200.0,
+    "pixel_velocity_kms": 1.8
+  },
+  "normalization": {
+    "depth": 0.7,
+    "lande": 1.2,
+    "wavelength_nm": 500.0,
+    "weighting_mode": 2
+  },
+  "processing": {
+    "remove_continuum_polarization": 1,
+    "interp_mode": 1,
+    "sigma_clip": {
+      "limit": 500.0,
+      "iterations": 0
+    }
+  },
+  "output": {
+    "profile": "results/prof.dat",
+    "save_model_spectrum": 1,
+    "model_spectrum": "results/outModelSpec.dat",
+    "plot_profile": 0,
+    "save_plot": 0,
+    "plot_image": "results/prof.png",
+    "save_lsdout": 1,
+    "lsdout": "auto"
+  },
+  "model_options": {
+    "saturation_correction": 1,
+    "telluric_filtering": 1,
+    "line_filtering": 1
+  }
+}

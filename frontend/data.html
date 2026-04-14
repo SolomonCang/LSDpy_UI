@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSD UI - Spectrum and Mask</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">LSD UI Workbench</div>
+        <nav class="main-nav">
+          <a class="nav-link" data-page="params" href="params.html">Parameters</a>
+          <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
+          <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
+          <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1>Spectrum and Mask</h1>
+        <p>Maintain observation and mask sources for LSD runs.</p>
+      </section>
+
+      <section class="card">
+        <h2>Input Paths</h2>
+        <div class="grid two">
+          <label>input.observation <input id="input-observation" type="text" /></label>
+          <label>input.mask <input id="input-mask" type="text" /></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Available Data Files</h2>
+        <div id="data-files-list" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+        </div>
+        <h2>Available Mask Files</h2>
+        <div id="mask-files-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="btn-row">
+          <button class="btn secondary" id="btn-data-load">Reload</button>
+          <button class="btn ghost" id="btn-validate">Validate Files</button>
+          <button class="btn primary" id="btn-data-save">Save Input Settings</button>
+          <span id="data-status" class="status">Ready</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/data.js"></script>
+  </body>
+</html>
