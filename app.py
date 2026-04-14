@@ -19,12 +19,18 @@ from fastapi import Body, FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from api import routes_analysis
+
 BASE_DIR = Path(__file__).resolve().parent
 CONFIG_FILE = BASE_DIR / "LSDConfig.json"
 FRONTEND_DIR = BASE_DIR / "frontend"
 DEFAULT_PORT = 8080
 
 app = FastAPI(title="LSD UI API", version="1.0.0", docs_url="/api/docs")
+
+# ── Analysis routes ──────────────────────────────────────────────────────────
+routes_analysis.init(BASE_DIR)
+app.include_router(routes_analysis.router)
 
 # ── Task state machine ──────────────────────────────────────────────────────
 _tasks: dict = {}
@@ -80,6 +86,17 @@ def list_mask_files():
         return []
     return sorted(f.name for f in d.glob("*")
                   if f.is_file() and not f.name.startswith("."))
+
+
+@app.get("/api/files/results")
+def list_result_files():
+    d = BASE_DIR / "results"
+    if not d.exists():
+        return []
+    return sorted(
+        str(f.relative_to(BASE_DIR)) for f in d.rglob("*.dat")
+        if f.is_file() and not f.name.startswith(".")
+    )
 
 
 @app.post("/api/files/validate")
