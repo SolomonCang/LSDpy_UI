@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSD UI - Spectrum & Mask Viewer</title>
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">LSD UI Workbench</div>
+        <nav class="main-nav">
+          <a class="nav-link" data-page="params" href="params.html">Parameters</a>
+          <a class="nav-link" data-page="data" href="data.html">Spectrum &amp; Mask</a>
+          <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
+          <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <h1>Spectrum &amp; Mask Viewer</h1>
+        <p>Interactive Plotly view of the observed spectrum with mask line annotations.</p>
+      </section>
+
+      <section class="card">
+        <div class="sv-toolbar">
+          <div class="field-row">
+            <label class="field-label" for="sv-obs">Observation file (relative path)</label>
+            <input id="sv-obs" type="text" class="field-input" placeholder="data/filename.s" />
+          </div>
+          <div class="field-row">
+            <label class="field-label" for="sv-mask">Mask file (relative path)</label>
+            <input id="sv-mask" type="text" class="field-input" placeholder="masks/filename.dat" />
+          </div>
+          <button id="btn-sv-load" class="btn btn-primary" aria-label="Load spectrum and mask plot">Load Plot</button>
+        </div>
+        <div id="sv-status" class="status-bar"></div>
+      </section>
+
+      <section class="card" style="padding:12px">
+        <iframe id="sv-plot-frame" class="sv-plot-frame" frameborder="0" scrolling="no"
+                title="Interactive spectrum and mask plot"></iframe>
+      </section>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script>
+      (function () {
+        function getPathsFromURL() {
+          var params = new URLSearchParams(window.location.search);
+          return { obs: params.get("obs") || "", mask: params.get("mask") || "" };
+        }
+
+        function loadPlot(obs, mask) {
+          if (!obs || !mask) {
+            window.setStatusBar("sv-status", "Please provide both an observation file and a mask file.", "warn");
+            return;
+          }
+          window.setStatusBar("sv-status", "Loading plot\u2026", "");
+          var url = "/api/plot/spectrum?obs=" + encodeURIComponent(obs) + "&mask=" + encodeURIComponent(mask);
+          var frame = document.getElementById("sv-plot-frame");
+          frame.onload = function () {
+            try {
+              var body = frame.contentDocument && frame.contentDocument.body;
+              if (body && body.textContent.indexOf('"detail"') !== -1) {
+                var detail = "";
+                try { detail = JSON.parse(body.textContent).detail; } catch (_) { detail = body.textContent.slice(0, 200); }
+                window.setStatusBar("sv-status", "Error: " + detail, "error");
+              } else {
+                window.setStatusBar("sv-status", "Loaded.", "ok");
+              }
+            } catch (_) {
+              window.setStatusBar("sv-status", "Loaded.", "ok");
+            }
+          };
+          frame.src = url;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+          window.LSDUI.setActiveNav("");
+
+          var urlPaths = getPathsFromURL();
+          var cfg = window.LSDUI.loadConfig();
+          var obsVal = urlPaths.obs || (cfg.input && cfg.input.observation) || "";
+          var maskVal = urlPaths.mask || (cfg.input && cfg.input.mask) || "";
+
+          document.getElementById("sv-obs").value = obsVal;
+          document.getElementById("sv-mask").value = maskVal;
+
+          document.getElementById("btn-sv-load").addEventListener("click", function () {
+            loadPlot(
+              document.getElementById("sv-obs").value.trim(),
+              document.getElementById("sv-mask").value.trim()
+            );
+          });
+
+          if (obsVal && maskVal) {
+            loadPlot(obsVal, maskVal);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

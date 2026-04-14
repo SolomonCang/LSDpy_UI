@@ -15,8 +15,8 @@ import uuid
 from pathlib import Path
 
 import uvicorn
-from fastapi import Body, FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import Body, FastAPI, HTTPException, Query
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -160,7 +160,52 @@ def cancel_task(task_id: str):
     return {"status": "ok"}
 
 
-# ── Static files (mount last so API routes take priority) ────────────────────
+# ── Spectrum + mask interactive plot ────────────────────────────────────────
+def _resolve_safe_path(relative: str, base: Path) -> Path:
+    """Resolve a relative path and verify it stays within base directory."""
+    try:
+        resolved = (base / relative).resolve()
+        base_resolved = base.resolve()
+        resolved.relative_to(base_resolved)  # raises ValueError if outside base
+    except (ValueError, OSError):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Path '{relative}' is outside the allowed directory."
+        )
+    return resolved
+
+
+@app.get("/api/plot/spectrum", response_class=HTMLResponse)
+def plot_spectrum(
+    obs: str = Query(..., description="Relative path to observation .s file"),
+    mask_file: str = Query(..., alias="mask", description="Relative path to mask .dat file"),
+):
+    """Return a self-contained Plotly HTML page showing the spectrum with mask annotations."""
+    obs_path = _resolve_safe_path(obs, BASE_DIR)
+    mask_path = _resolve_safe_path(mask_file, BASE_DIR)
+
+    if not obs_path.is_file():
+        raise HTTPException(status_code=404, detail=f"Observation file not found: {obs}")
+    if not mask_path.is_file():
+        raise HTTPException(status_code=404, detail=f"Mask file not found: {mask_file}")
+
+    try:
+        from core.lsd_io import observation, mask as LSDMask  # noqa: PLC0415
+        from core.plotting.spectrum_plots import plot_spectrum_with_mask  # noqa: PLC0415
+
+        obs_obj = observation(str(obs_path))
+        mask_obj = LSDMask(str(mask_path))
+        html = plot_spectrum_with_mask(obs_obj, mask_obj)
+        return HTMLResponse(content=html)
+    except (ValueError, OSError) as exc:
+        raise HTTPException(status_code=400,
+                            detail=f"Failed to load input files: {exc}")
+    except Exception as exc:
+        raise HTTPException(status_code=500,
+                            detail=f"Failed to generate spectrum plot: {exc}")
+
+
+
 if FRONTEND_DIR.exists():
     app.mount("/",
               StaticFiles(directory=str(FRONTEND_DIR), html=True),
