@@ -68,11 +68,11 @@ class paramsLSD:
         self.normWave = float(normalization_cfg.get('wavelength_nm', 500.0))
         self.weightingMode = int(normalization_cfg.get('weighting_mode', 2))
         self.weightingThreshold = float(
-            normalization_cfg.get('weighting_threshold', 0.5))
+            normalization_cfg.get('weighting_threshold') or 0.5)
         self.weightingLowValue = float(
-            normalization_cfg.get('weighting_low_value', 0.1))
+            normalization_cfg.get('weighting_low_value') or 0.1)
         self.weightingHighValue = float(
-            normalization_cfg.get('weighting_high_value', 10.0))
+            normalization_cfg.get('weighting_high_value') or 10.0)
 
         self.removeContPol = int(
             processing_cfg.get('remove_continuum_polarization', 1))

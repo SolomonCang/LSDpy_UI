@@ -1,25 +1,31 @@
 {
   "input": {
     "observation": "data/hd219134_19jun16_v_01.s",
-    "mask": "masks/mask-4500g40-0.1-trim3.dat"
+    "mask": "masks/mask-4500g40-0.1-trim3.dat",
+    "spectra": [
+      "data/hd219134_19jun16_v_01.s"
+    ]
   },
   "profile": {
-    "vel_start_kms": -200.0,
-    "vel_end_kms": 200.0,
+    "vel_start_kms": -100,
+    "vel_end_kms": 100,
     "pixel_velocity_kms": 1.8
   },
   "normalization": {
     "depth": 0.7,
     "lande": 1.2,
-    "wavelength_nm": 500.0,
-    "weighting_mode": 2
+    "wavelength_nm": 650,
+    "weighting_mode": 2,
+    "weighting_threshold": 0.5,
+    "weighting_low_value": 0.1,
+    "weighting_high_value": 10
   },
   "processing": {
     "remove_continuum_polarization": 1,
     "interp_mode": 1,
     "sigma_clip": {
-      "limit": 500.0,
-      "iterations": 0
+      "limit": 300,
+      "iterations": 1
     }
   },
   "output": {

@@ -17,7 +17,7 @@
           <a class="nav-link" data-page="params" href="params.html">Parameters</a>
           <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
           <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
-          <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
+          <a class="nav-link active" data-page="results" href="results.html">Result Plot</a>
         </nav>
       </div>
     </header>
@@ -31,11 +31,27 @@
       <section class="card">
         <div class="btn-row" style="margin-bottom:10px">
           <button class="btn secondary" id="btn-result-load">Load Latest Result</button>
+          <button class="btn secondary" id="btn-load-file">Load from File</button>
+          <button class="btn secondary" id="btn-load-batch">Load Batch from Files</button>
           <button class="btn secondary" id="btn-view-spectrum">View Spectrum &amp; Mask</button>
           <span id="result-status" class="status">No data</span>
         </div>
-        <div class="plot-box">
-          <svg id="profile-svg" viewBox="0 0 900 280" preserveAspectRatio="none"></svg>
+        <div id="batch-selector" style="display:none;margin-bottom:10px">
+          <label style="font-size:12px;font-weight:600;color:var(--text-muted)">Batch Results:
+            <select id="batch-select" style="margin-left:6px;font-size:13px"></select>
+          </label>
+          <span id="batch-count" style="font-size:12px;color:var(--text-muted);margin-left:8px"></span>
+        </div>
+        <div class="plot-box" style="display:flex;flex-direction:column;gap:0">
+          <div style="position:relative">
+            <svg id="profile-svg-i" viewBox="0 0 900 220" preserveAspectRatio="none" style="width:100%;display:block"></svg>
+          </div>
+          <div style="position:relative">
+            <svg id="profile-svg-v" viewBox="0 0 900 140" preserveAspectRatio="none" style="width:100%;display:block"></svg>
+          </div>
+          <div style="position:relative">
+            <svg id="profile-svg-n" viewBox="0 0 900 140" preserveAspectRatio="none" style="width:100%;display:block"></svg>
+          </div>
         </div>
       </section>
 

@@ -504,6 +504,32 @@ details[open] .json-preview-summary::before { transform: rotate(90deg); }
 .sep { opacity: 0.4; }
 
 /* ── Legacy multi-page compat ─────────────────────────────── */
+.main-nav {
+  display: flex;
+  gap: 0;
+  margin-left: auto;
+}
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: var(--header-h);
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  letter-spacing: 0.07px;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--text); text-decoration: none; }
+.nav-link.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
 .page {
   max-width: 1180px;
   margin: 0 auto;
@@ -556,6 +582,87 @@ input:focus, select:focus { border-color: var(--primary); }
   .field-grid { grid-template-columns: 1fr; }
 }
 
+
+/* ── Data table ───────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+.data-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.data-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: .82rem;
+}
+.data-table td code {
+  font-family: "SF Mono", "Fira Mono", Consolas, monospace;
+  font-size: .82rem;
+  background: none;
+  padding: 0;
+}
+.data-table tr:hover td { background: var(--bg-surface); }
+.data-table tbody:empty + .no-files-msg { display: block; }
+
+/* ── Observation entries table ───────────────────────────── */
+.obs-table-wrap { overflow-x: auto; }
+.obs-entry-table { min-width: 480px; }
+.obs-entry-table .field-input {
+  padding: 5px 8px;
+  font-size: .82rem;
+  height: 30px;
+}
+.obs-entry-table .obs-fn {
+  min-width: 200px;
+  width: 100%;
+  font-family: "SF Mono", "Fira Mono", Consolas, monospace;
+}
+.obs-row-num {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding-right: 6px;
+  font-size: .78rem;
+  user-select: none;
+}
+.obs-file-status {
+  font-size: 1rem;
+  text-align: center;
+  cursor: default;
+  min-width: 3rem;
+}
+.obs-file-ok      { color: var(--ok); }
+.obs-file-missing { color: var(--danger); }
+.obs-file-unknown { color: var(--text-muted); }
+
+.no-files-msg {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 12px 0;
+}
+.no-files-msg code {
+  font-family: "SF Mono", "Fira Mono", Consolas, monospace;
+  background: var(--bg-surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.hint {
+  font-size: .72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
 
 /* ── Spectrum Viewer ──────────────────────────────────────── */
 .sv-toolbar {

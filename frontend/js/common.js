@@ -8,12 +8,14 @@
 // ── Config state ─────────────────────────────────────────────────────────────
 const CONFIG_KEY = "lsd_ui_config_v1";
 const RESULT_KEY = "lsd_ui_last_result_v1";
+const BATCH_RESULT_KEY_COMMON = "lsd_ui_batch_result_v1";
 
 function defaultConfig() {
   return {
     input: {
       observation: "data/hd219134_19jun16_v_01.s",
-      mask: "masks/mask-4500g40-0.1-trim3.dat"
+      mask: "masks/mask-4500g40-0.1-trim3.dat",
+      spectra: []
     },
     profile: {
       vel_start_kms: -200.0,
@@ -125,7 +127,7 @@ async function saveServerConfig(cfg) {
 function setStatusBar(elOrId, msg, cls) {
   const node = typeof elOrId === "string" ? document.getElementById(elOrId) : elOrId;
   if (!node) return;
-  node.textContent = msg || "";
+  node.textContent = msg || "\u00a0";  // \u00a0 = &nbsp; keeps reserved height
   node.className = "status-bar" + (cls ? " " + cls : "");
 }
 
@@ -169,11 +171,13 @@ window.setStatusBar    = setStatusBar;
 window.LSDUI = {
   CONFIG_KEY,
   RESULT_KEY,
+  BATCH_RESULT_KEY: BATCH_RESULT_KEY_COMMON,
   defaultConfig,
   loadConfig,
   saveConfig,
   fetchServerConfig,
   saveServerConfig,
   setActiveNav,
-  fmtNow
+  fmtNow,
+  _mergeDeep
 };

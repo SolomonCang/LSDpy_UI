@@ -8,30 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/app.css" />
-    <style>
-      .tooltip {
-        display: inline-block;
-        margin-left: 4px;
-        color: #1b61c9;
-        cursor: help;
-        font-weight: 600;
-        font-size: 0.85em;
-        background: #eef2f6;
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-        line-height: 16px;
-        text-align: center;
-      }
-    </style>
   </head>
   <body>
     <header class="app-header">
       <div class="header-inner">
         <div class="brand">LSD UI Workbench</div>
         <nav class="main-nav">
-          <a class="nav-link" data-page="params" href="params.html">Parameters</a>
-          <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
+          <a class="nav-link active" data-page="params" href="params.html">Parameters</a>
+          <a class="nav-link" data-page="data" href="data.html">Spectrum &amp; Mask</a>
           <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
           <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
         </nav>
@@ -44,124 +28,26 @@
         <p>Control profile, normalization, processing, and output behavior.</p>
       </section>
 
-      <section class="card">
-        <h2>Profile</h2>
-        <div class="grid three">
-          <label>Velocity Start (km/s) <span class="tooltip" title="Start velocity of the profile (Key: profile.vel_start_kms)">?</span>
-            <input id="vel-start" type="number" step="0.1" />
-          </label>
-          <label>Velocity End (km/s) <span class="tooltip" title="End velocity of the profile (Key: profile.vel_end_kms)">?</span>
-            <input id="vel-end" type="number" step="0.1" />
-          </label>
-          <label>Pixel Velocity (km/s) <span class="tooltip" title="Velocity step per pixel (Key: profile.pixel_velocity_kms)">?</span>
-            <input id="pixel-vel" type="number" step="0.1" />
-          </label>
+      <!-- Actions bar -->
+      <section class="card" style="margin-bottom:16px">
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="params-reload-btn">↻ Reload</button>
+          <button class="btn btn-secondary" id="params-reset-btn">⟳ Reset</button>
+          <button class="btn btn-secondary" id="params-export-btn">⬇ Export JSON</button>
+          <button class="btn btn-primary"   id="params-save-btn">💾 Save</button>
+          <span id="params-status" class="status-bar" aria-live="polite" style="display:inline-block;min-height:1.4em;min-width:120px">&nbsp;</span>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Normalization</h2>
-        <div class="grid four">
-          <label>Weighting Mode <span class="tooltip" title="Method to compute normalization weights (Key: normalization.weighting_mode)">?</span>
-            <select id="weighting-mode">
-              <option value="0">0: g</option>
-              <option value="1">1: prof x g</option>
-              <option value="2">2: lambda x prof x g</option>
-              <option value="3">3: prof</option>
-              <option value="4">4: lambda x prof</option>
-              <option value="5">5: equal</option>
-              <option value="6">6: prof x (lambda x g)^2</option>
-              <option value="7">7: fixed_threshold</option>
-            </select>
-          </label>
-          <label>Mean Depth <span class="tooltip" title="Normalization depth for lines (Key: normalization.depth)">?</span>
-            <input id="norm-depth" type="number" step="0.01" />
-          </label>
-          <label>Mean Landé Factor <span class="tooltip" title="Normalization Landé factor (Key: normalization.lande)">?</span>
-            <input id="norm-lande" type="number" step="0.01" />
-          </label>
-          <label>Mean Wavelength (nm) <span class="tooltip" title="Normalization wavelength (Key: normalization.wavelength_nm)">?</span>
-            <input id="norm-wave" type="number" step="0.1" />
-          </label>
-        </div>
-        <div class="grid three" style="margin-top:10px">
-          <label>Weighting Threshold <span class="tooltip" title="Threshold for mode 7 binary weighting (Key: normalization.weighting_threshold)">?</span>
-            <input id="norm-thresh" type="number" step="0.01" />
-          </label>
-          <label>Weighting Low Value <span class="tooltip" title="Low weight for shallow lines in mode 7 (Key: normalization.weighting_low_value)">?</span>
-            <input id="norm-low-val" type="number" step="0.01" />
-          </label>
-          <label>Weighting High Value <span class="tooltip" title="High weight for deep lines in mode 7 (Key: normalization.weighting_high_value)">?</span>
-            <input id="norm-high-val" type="number" step="0.1" />
-          </label>
-        </div>
-      </section>
+      <!-- Accordion sections rendered by params.js -->
+      <div id="params-form" class="accordion-list"></div>
 
-      <section class="card">
-        <h2>Processing</h2>
-        <div class="grid four">
-          <label>Interpolation Mode <span class="tooltip" title="Mode for spectrum interpolation (Key: processing.interp_mode)">?</span>
-            <input id="interp-mode" type="number" step="1" />
-          </label>
-          <label>Sigma Clip Limit <span class="tooltip" title="Threshold for clipping bad pixels (Key: processing.sigma_clip.limit)">?</span>
-            <input id="sigma-limit" type="number" step="0.1" />
-          </label>
-          <label>Sigma Clip Iterations <span class="tooltip" title="Number of clipping iterations (Key: processing.sigma_clip.iterations)">?</span>
-            <input id="sigma-iters" type="number" step="1" />
-          </label>
-        </div>
-        <div class="grid two" style="margin-top:10px">
-          <label><input id="remove-cont-pol" type="checkbox" /> Remove Continuum Polarization <span class="tooltip" title="Subtract continuum polarization levels (Key: processing.remove_continuum_polarization)">?</span></label>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Model Options</h2>
-        <div class="grid three">
-          <label><input id="sat-corr" type="checkbox" /> Saturation Correction <span class="tooltip" title="Apply line saturation correction (Key: model_options.saturation_correction)">?</span></label>
-          <label><input id="tell-filt" type="checkbox" /> Telluric Filtering <span class="tooltip" title="Filter out telluric lines (Key: model_options.telluric_filtering)">?</span></label>
-          <label><input id="line-filt" type="checkbox" /> Line Filtering <span class="tooltip" title="Filter lines mask dynamically (Key: model_options.line_filtering)">?</span></label>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Output</h2>
-        <div class="grid two">
-          <label>Profile Destination <span class="tooltip" title="Path to save output profile (Key: output.profile)">?</span>
-            <input id="output-profile" type="text" />
-          </label>
-          <label>Model Spectrum Dest. <span class="tooltip" title="Path to save derived model spectrum (Key: output.model_spectrum)">?</span>
-            <input id="output-model-spec" type="text" />
-          </label>
-          <label>Plot Image Name <span class="tooltip" title="Path to save generated plot (Key: output.plot_image)">?</span>
-            <input id="output-plot-img" type="text" />
-          </label>
-          <label>LSD Out Log <span class="tooltip" title="Target for command line output parsing (Key: output.lsdout)">?</span>
-            <select id="output-lsdout-mode">
-              <option value="auto">auto</option>
-              <option value="custom">custom path</option>
-            </select>
-          </label>
-        </div>
-        <div class="grid four" style="margin-top:10px">
-          <label><input id="save-model-spec" type="checkbox" /> Save Model Spectrum <span class="tooltip" title="Toggle saving model spectrum (Key: output.save_model_spectrum)">?</span></label>
-          <label><input id="plot-profile" type="checkbox" /> Plot Profile <span class="tooltip" title="Display plotting window automatically (Key: output.plot_profile)">?</span></label>
-          <label><input id="save-plot" type="checkbox" /> Save Plot <span class="tooltip" title="Save profile to an image file (Key: output.save_plot)">?</span></label>
-          <label><input id="save-lsdout" type="checkbox" /> Save LSDOut Log <span class="tooltip" title="Store diagnostic execution logs (Key: output.save_lsdout)">?</span></label>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Preview</h2>
-        <div class="btn-row" style="margin-bottom:10px">
-          <button class="btn secondary" id="btn-reload">Reload Config</button>
-          <button class="btn ghost" id="btn-reset">Reset Default</button>
-          <button class="btn secondary" id="btn-validate">Validate</button>
-          <button class="btn primary" id="btn-save">Save Parameters</button>
-          <button class="btn primary" id="btn-export">Export JSON</button>
-          <span id="params-status" class="status">Ready</span>
-        </div>
-        <textarea id="json-preview" spellcheck="false" style="height: 300px; width: 100%; font-family: monospace;"></textarea>
+      <!-- JSON preview -->
+      <section class="card" style="margin-top:16px">
+        <details>
+          <summary style="cursor:pointer;font-weight:600;padding:4px 0">JSON Preview</summary>
+          <textarea id="params-json-preview" class="json-preview" spellcheck="false" readonly style="margin-top:8px"></textarea>
+        </details>
       </section>
     </main>
 

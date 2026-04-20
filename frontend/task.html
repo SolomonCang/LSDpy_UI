@@ -16,7 +16,7 @@
         <nav class="main-nav">
           <a class="nav-link" data-page="params" href="params.html">Parameters</a>
           <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
-          <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
+          <a class="nav-link active" data-page="task" href="task.html">LSD Task</a>
           <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
         </nav>
       </div>
@@ -25,30 +25,25 @@
     <main class="page">
       <section class="hero">
         <h1>LSD Task</h1>
-        <p>Run in mock mode now, switch to API mode when backend endpoints are ready.</p>
+        <p>Run LSD on the observations configured in the Spectrum &amp; Mask page.</p>
       </section>
 
       <section class="card">
         <h2>Run Control</h2>
-        <div class="grid two">
-          <label>Run Mode
-            <select id="run-mode">
-              <option value="mock">Mock</option>
-              <option value="api">API</option>
-            </select>
-          </label>
-          <label>API Base URL <input id="api-base-url" type="text" value="http://127.0.0.1:8000" /></label>
-        </div>
-        <div class="btn-row" style="margin-top:10px">
-          <button class="btn ghost" id="btn-run-validate">Validate Config</button>
-          <button class="btn secondary" id="btn-run-start">Start Task</button>
-          <button class="btn danger" id="btn-run-stop">Stop</button>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="btn-run-validate">Validate Config</button>
+          <button class="btn btn-primary" id="btn-run-start">▶ Run LSD</button>
+          <button class="btn btn-danger" id="btn-run-stop">■ Stop</button>
           <span id="task-status" class="status">Idle</span>
         </div>
       </section>
 
       <section class="card">
         <h2>Task Log</h2>
+        <div class="btn-row" style="margin-bottom:6px">
+          <button class="btn ghost btn-sm" id="btn-log-clear">Clear Log</button>
+          <span id="batch-info" style="font-size:12px;color:var(--text-muted)"></span>
+        </div>
         <div id="task-log" class="log"></div>
       </section>
     </main>

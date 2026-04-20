@@ -15,7 +15,7 @@
         <div class="brand">LSD UI Workbench</div>
         <nav class="main-nav">
           <a class="nav-link" data-page="params" href="params.html">Parameters</a>
-          <a class="nav-link" data-page="data" href="data.html">Spectrum & Mask</a>
+          <a class="nav-link active" data-page="data" href="data.html">Spectrum & Mask</a>
           <a class="nav-link" data-page="task" href="task.html">LSD Task</a>
           <a class="nav-link" data-page="results" href="results.html">Result Plot</a>
         </nav>
@@ -25,32 +25,66 @@
     <main class="page">
       <section class="hero">
         <h1>Spectrum and Mask</h1>
-        <p>Maintain observation and mask sources for LSD runs.</p>
+        <p>Manage observation spectra and line mask files for LSD processing.</p>
       </section>
 
-      <section class="card">
-        <h2>Input Paths</h2>
-        <div class="grid two">
-          <label>input.observation <input id="input-observation" type="text" /></label>
-          <label>input.mask <input id="input-mask" type="text" /></label>
+      <!-- ── Mask Selection Card ────────────────────────────────── -->
+      <section class="card" style="margin-bottom:16px">
+        <div class="card-title">Line Mask</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <input id="input-mask" type="text" class="field-input" style="flex:1" placeholder="masks/mask-xxx.dat" spellcheck="false" />
         </div>
+        <div class="card-title" style="margin-top:4px">Available Mask Files <span class="hint">(click to select)</span></div>
+        <table class="data-table" id="mask-file-table">
+          <thead><tr><th>Filename</th><th style="width:5rem"></th></tr></thead>
+          <tbody id="mask-file-tbody"></tbody>
+        </table>
+        <p id="mask-no-files" class="no-files-msg" style="display:none">No mask files found in <code>masks/</code></p>
       </section>
 
-      <section class="card">
-        <h2>Available Data Files</h2>
-        <div id="data-files-list" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-        </div>
-        <h2>Available Mask Files</h2>
-        <div id="mask-files-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
-        </div>
+      <!-- ── Available Data Files Card ──────────────────────────── -->
+      <section class="card" style="margin-bottom:16px">
+        <div class="card-title">Available Observation Files <span class="hint">(in data/)</span></div>
+        <table class="data-table" id="data-file-table">
+          <thead><tr><th>Filename</th><th style="width:5rem">Link</th></tr></thead>
+          <tbody id="data-file-tbody"></tbody>
+        </table>
+        <p id="data-no-files" class="no-files-msg" style="display:none">No files found in <code>data/</code></p>
       </section>
 
+      <!-- ── Observation Entries Editor ──────────────────────────── -->
+      <section class="card" style="margin-bottom:16px">
+        <div class="card-title">Observation Entries
+          <span class="hint" style="text-transform:none;font-weight:400">&nbsp;— spectra sharing the mask above</span>
+        </div>
+        <div class="obs-table-wrap">
+          <table class="data-table obs-entry-table">
+            <thead>
+              <tr>
+                <th style="width:2.2rem">#</th>
+                <th>Filename <span class="hint">(relative path)</span></th>
+                <th style="width:5rem">File</th>
+                <th style="width:3rem"></th>
+              </tr>
+            </thead>
+            <tbody id="obs-entries-tbody"></tbody>
+          </table>
+        </div>
+        <p id="obs-no-entries" class="no-files-msg">No observation entries. Click <strong>＋ Link</strong> on a data file or <strong>Add Row</strong> below.</p>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn btn-secondary btn-sm" id="btn-obs-add">+ Add Row</button>
+          <button class="btn btn-ghost btn-sm" id="btn-obs-clear">Clear All</button>
+        </div>
+        <datalist id="obs-file-datalist"></datalist>
+      </section>
+
+      <!-- ── Actions Bar ────────────────────────────────────────── -->
       <section class="card">
         <div class="btn-row">
-          <button class="btn secondary" id="btn-data-load">Reload</button>
-          <button class="btn ghost" id="btn-validate">Validate Files</button>
-          <button class="btn primary" id="btn-data-save">Save Input Settings</button>
-          <span id="data-status" class="status">Ready</span>
+          <button class="btn btn-secondary" id="btn-data-load">Reload</button>
+          <button class="btn btn-secondary" id="btn-validate">Validate Files</button>
+          <button class="btn btn-primary" id="btn-data-save">Save to Config</button>
+          <span id="data-status" class="status-bar"></span>
         </div>
       </section>
     </main>
