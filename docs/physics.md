@@ -2,13 +2,53 @@
 
 ## 1. 最小二乘反褶积（LSD）
 
-最小二乘反褶积（Least-Squares Deconvolution，LSD）是一种从恒星光谱中提取平均谱线轮廓的技术，特别用于偏振光谱测量。其核心假设是：所有谱线的形状相同，仅在振幅（由谱线权重决定）和位置（由中心波长决定）上有所不同。
+最小二乘反褶积（Least-Squares Deconvolution，LSD）是一种从恒星光谱中提取平均谱线轮廓的技术，特别用于偏振光谱测量。
 
-在这一假设下，观测到的光谱可以写成谱线模板（掩膜 M）与一条平均谱线轮廓（profile Z）的卷积：
+### 1.1 核心物理假设
 
-$$Y(\lambda) = \sum_l w_l \cdot Z\left(\frac{c(\lambda - \lambda_l)}{\lambda_l}\right)$$
+LSD 建立在以下一组物理假设之上：
 
-其中 $\lambda_l$ 是第 $l$ 条谱线的中心波长，$w_l$ 是其权重，$Z(v)$ 是在速度空间定义的平均轮廓。
+**（A）谱线自相似假设（Self-similar profiles）**  
+所有谱线具有**相同的轮廓形状**，仅在振幅（由谱线权重 $w_l$ 决定）和位置（由中心波长 $\lambda_l$ 决定）上有所不同。这是 LSD 成立的核心前提。
+
+在这一假设下，观测到的光谱可以写成谱线掩膜 $M$ 与平均轮廓 $Z$ 的卷积：
+
+$$Y(\lambda) = \sum_l w_l \cdot Z\left(\frac{c(\lambda - \lambda_l)}{\lambda_l}\right) + \epsilon(\lambda)$$
+
+其中 $\lambda_l$ 是第 $l$ 条谱线的中心波长，$w_l$ 是其权重，$Z(v)$ 是在速度空间定义的平均轮廓，$\epsilon(\lambda)$ 是观测噪声。
+
+**（B）弱磁场近似（Weak-field approximation）**  
+在 Stokes V 的分析中，假设磁致 Zeeman 分裂远小于谱线热宽度（即 $\Delta\lambda_Z \ll \Delta\lambda_{\rm th}$）。此时圆偏振信号近似为：
+
+$$V(\lambda) \approx -\frac{1}{2} \frac{\partial I}{\partial \lambda} \cdot \bar{g} \lambda^2 \frac{e}{4\pi m_e c^2} B_{los}$$
+
+权重 $w_l \propto d_l \cdot g_l \cdot \lambda_l$（模式 2）正是在此近似下最优。该假设在磁场强度 $B \lesssim$ 几百 Gauss 的太阳型和晚型恒星中通常成立。
+
+**（C）谱线线性叠加（Linear superposition）**  
+不同谱线的贡献可以线性相加，即忽略谱线间的辐射转移耦合（不考虑散射、非线性形成等效应）。这对于吸收线在连续谱背景上的简单叠加是合理近似。
+
+**（D）连续谱完美归一化**  
+LSD 的反褶积矩阵方程假设输入光谱已精确归一化到连续谱，即谱线深度 $1 - I/I_c$ 中的 $I_c = 1$。任何连续谱归一化误差将直接混入平均轮廓。
+
+**（E）掩膜与恒星参数一致（Mask consistency）**  
+谱线掩膜中的深度和 Landé g 因子来自与目标星 $T_{\rm eff}$、$\log g$、$[M/H]$ 相符的合成谱或原子数据库（如 VALD）。掩膜与实际恒星参数越接近，权重越可靠，LSD 平均轮廓的信噪比提升效果越显著。
+
+---
+
+### 1.2 方法的局限性
+
+理解以下局限性有助于正确解读 LSD 结果：
+
+| 局限性 | 影响 | 处理建议 |
+|---|---|---|
+| **谱线形状不一致** | 宽线（Ba II、Ca II 等）与窄线轮廓形状差异大，破坏自相似假设，引起平均轮廓失真 | 在掩膜中排除异常宽/窄谱线 |
+| **强磁场（$B \gtrsim$ kG）** | Zeeman 分裂可与热展宽比拟，弱磁场近似失效，Stokes V 不再与 $\partial I/\partial\lambda$ 成比例 | 使用模式 6（二阶项）；考虑完整 Stokes 合成 |
+| **快速自转（$v\sin i \gtrsim$ 100 km/s）** | 转动展宽使所有谱线趋同，但宽线轮廓与速度分辨率不匹配，矩阵条件数恶化 | 扩大速度格点范围；适当降低速度分辨率 |
+| **连续谱归一化误差** | 低频连续谱起伏混入 LSD 轮廓的翼部，难以与真实轮廓展宽区分 | 在 LSD 前仔细做连续谱拟合；检查轮廓远翼 |
+| **掩膜参数不匹配** | 使用错误 $T_{\rm eff}$ 或 $\log g$ 的掩膜导致深度权重偏差，部分谱线被错误加权 | 用与目标星参数相符的掩膜；对比多个掩膜结果 |
+| **谱线拥挤（blend）** | 密集重叠的谱线违反线性叠加，导致矩阵病态（由饱和校正部分缓解）| 启用饱和校正；限制掩膜在高拥挤波段的谱线密度 |
+| **非 LTE 效应** | 对 O/B 型热星或极冷 M 型星，LTE 假设（掩膜来源）不准确，轮廓系统偏差 | LSD 通常只适用于 FGK 型恒星；热星需专门处理 |
+| **Stokes QU 的磁场信息丢失** | 标准 LSD 仅提取 $\langle B_{los} \rangle$（视线积分），横向磁场分量（Stokes Q/U）信息需要额外分析 | 结合 ZDI 或 Stokes QU 的 LSD 轮廓做完整分析 |
 
 ---
 
@@ -50,23 +90,35 @@ LSD 同时处理多个物理量（Stokes 参数），每个 `.s` 文件包含：
 
 ## 4. 谱线权重
 
-谱线权重 $w_l$ 决定每条谱线在 LSD 中的贡献大小，分为强度（Stokes I）权重和偏振（Stokes V）权重。代码支持 7 种权重模式：
+谱线权重 $w_l$ 决定每条谱线在 LSD 中的贡献大小，分为强度（Stokes I）权重和偏振（Stokes V）权重。Python 版本支持 **8 种权重模式**（模式 0–7）：
 
-| 模式 | 偏振权重公式 | 适用场合 |
-|---|---|---|
-| 0 | $g / g_0$ | 仅 Landé 因子 |
-| 1 | $d \cdot g / (d_0 \cdot g_0)$ | 深度 × Landé |
-| 2 | $d \cdot \lambda \cdot g / (d_0 \cdot \lambda_0 \cdot g_0)$ | 深度 × 波长 × Landé（**默认**，弱磁场近似最准确） |
-| 3 | $d / d_0$ | 仅深度 |
-| 4 | $d \cdot \lambda / (d_0 \cdot \lambda_0)$ | 深度 × 波长 |
-| 5 | $1$ | 均等权重 |
-| 6 | $d \cdot (\lambda g)^2 / (d_0 (\lambda_0 g_0)^2)$ | 弱磁场强度精确公式 |
+| 模式 | 名称 | 偏振权重公式 | 适用场合 |
+|---|---|---|---|
+| 0 | `g` | $g / g_0$ | 仅 Landé 因子，不考虑线深度 |
+| 1 | `prof*g` | $d \cdot g / (d_0 \cdot g_0)$ | 深度 × Landé，平衡两个物理量 |
+| 2 | `lam*prof*g` | $d \cdot \lambda \cdot g / (d_0 \cdot \lambda_0 \cdot g_0)$ | 深度 × 波长 × Landé（**默认**，弱磁场近似最准确） |
+| 3 | `prof` | $d / d_0$ | 仅线深度，简单线强度权重 |
+| 4 | `lam*prof` | $d \cdot \lambda / (d_0 \cdot \lambda_0)$ | 深度 × 波长依赖性 |
+| 5 | `1` | $1$ | 均等权重，用于对比测试 |
+| 6 | `prof*(lam*g)²` | $d \cdot (\lambda g)^2 / (d_0 (\lambda_0 g_0)^2)$ | 强调 Zeeman 和波长的二阶效应，适合高磁场星体 |
+| 7 | `fixed_threshold` | $w_{\rm low}$（若 $d/d_0 < \tau$），否则 $w_{\rm high}$ | 固定阈值二值化，处理高噪声低 S/N 光谱 |
 
 强度权重恒为：$w_I = d / d_0$
 
 其中 $d_0$、$g_0$、$\lambda_0$ 为归一化参考值（`normDepth`、`normLande`、`normWave`）。
 
 **物理依据（模式 2）**：对圆偏振，弱磁场 Zeeman 分裂下 $V \propto g \lambda^2 B_{los}$，对有限谱线深度的贡献正比于 $d \cdot g \cdot \lambda$，因此模式 2 的权重在弱磁场假设下最优。
+
+**模式 7（固定阈值二值化）**：参考 C 版本硬阈值策略，对归一化深度低于阈值 $\tau$ 的谱线赋予低权重 $w_{\rm low}$，其余赋予高权重 $w_{\rm high}$。该模式对观测误差估计（$\sigma$）不敏感，可防止过拟合，适用于 S/N 较低的数据。阈值及权重值可在 `LSDConfig.json` 中配置：
+
+```json
+"normalization": {
+  "weighting_mode": 7,
+  "weighting_threshold": 0.5,
+  "weighting_low_value": 0.1,
+  "weighting_high_value": 10.0
+}
+```
 
 ---
 
