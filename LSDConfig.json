@@ -3,6 +3,8 @@
     "observation": "data/hd219134_19jun16_v_01.s",
     "mask": "masks/mask-4500g40-0.1-trim3.dat",
     "spectra": [
+      "data/hd219134_19jun16_v_01.s",
+      "data/hd219134_19jun16_v_01.s",
       "data/hd219134_19jun16_v_01.s"
     ]
   },

@@ -191,8 +191,10 @@ def lsdFit(obs, mask, prof, interpMode):
         prof.specN1 = cho_solve((cholV, lowV), betaN1)
 
         identity = np.eye(alphaI_dense.shape[0])
-        covarI_diag = np.sum(cho_solve((cholI, lowI), identity)**2, axis=0)
-        covarV_diag = np.sum(cho_solve((cholV, lowV), identity)**2, axis=0)
+        covarI = cho_solve((cholI, lowI), identity)
+        covarV = cho_solve((cholV, lowV), identity)
+        covarI_diag = np.diag(covarI)
+        covarV_diag = np.diag(covarV)
 
         prof.specSigI = np.sqrt(covarI_diag)
         prof.specSigV = np.sqrt(covarV_diag)
